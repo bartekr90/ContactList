@@ -1,22 +1,24 @@
-﻿namespace ContactList
+﻿using System.Drawing;
+using System.IO;
+
+namespace ContactList
 {
     public class Contact
     {
-        public Contact()
-        {
-            _id = 0;
-            _photo = "";
-            _FirstName = "brak";
-            _LastName = "brak";
-            _PhoneNr = "brak";
-            _Email = "brak";
-            _Type = "";
-            _Company = "brak";
-            _Position = "brak";
-            _Comments = "brak";
-        }
         public int _id { get; set; }
         public string _photo { get; set; }
+        public Image Picture
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_photo))
+                {
+                    if (File.Exists(_photo))
+                        return Image.FromFile(_photo);
+                }
+                return null;
+            }
+        }
         public string _FirstName { get; set; }
         public string _LastName { get; set; }
         public string _PhoneNr { get; set; }
