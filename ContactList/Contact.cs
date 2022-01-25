@@ -5,16 +5,16 @@ namespace ContactList
 {
     public class Contact
     {
-        public int _id { get; set; }
-        public string _photo { get; set; }
-        public Image Picture
+        public int _Id { get; set; }
+        public string _Photo { get; set; }
+        public Image _Picture
         {
             get
             {
-                if (!string.IsNullOrEmpty(_photo))
+                if (!string.IsNullOrEmpty(_Photo))
                 {
-                    if (File.Exists(_photo))
-                        return Image.FromFile(_photo);
+                    if (File.Exists(_Photo))
+                        return Image.FromFile(_Photo);
                 }
                 return null;
             }

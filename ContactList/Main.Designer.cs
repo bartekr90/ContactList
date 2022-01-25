@@ -132,11 +132,13 @@ namespace ContactList
             // 
             // cmbType
             // 
+            this.cmbType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbType.FormattingEnabled = true;
             this.cmbType.Location = new System.Drawing.Point(12, 419);
             this.cmbType.Name = "cmbType";
             this.cmbType.Size = new System.Drawing.Size(184, 23);
             this.cmbType.TabIndex = 1;
+            this.cmbType.SelectedIndexChanged += new System.EventHandler(this.cmbType_SelectedIndexChanged);
             // 
             // rtbComment
             // 
@@ -225,7 +227,7 @@ namespace ContactList
             this.dgvContactList.Location = new System.Drawing.Point(241, 61);
             this.dgvContactList.Name = "dgvContactList";
             this.dgvContactList.RowHeadersVisible = false;
-            this.dgvContactList.RowTemplate.Height = 25;
+            this.dgvContactList.RowTemplate.Height = 100;
             this.dgvContactList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvContactList.Size = new System.Drawing.Size(955, 572);
             this.dgvContactList.TabIndex = 6;
@@ -279,6 +281,7 @@ namespace ContactList
             this.pbProfilPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pbProfilPicture.TabIndex = 9;
             this.pbProfilPicture.TabStop = false;
+            this.pbProfilPicture.Click += new System.EventHandler(this.pbProfilPicture_Click);
             // 
             // MainWindow
             // 

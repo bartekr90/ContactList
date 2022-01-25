@@ -22,8 +22,10 @@ namespace ContactList
             InitializeComponent();
             InitCombobox();
             DgvRefresh();
+            SetColumnsHeader();
+            CheckType();
             tbFirstName.Select();
-        }
+        }       
 
         private void butSave_Click(object sender, EventArgs e)
         {
@@ -31,7 +33,7 @@ namespace ContactList
             {
                 if (_editedIdOfContact != 0)
                 {
-                    _contactList.RemoveAll(x => x._id == _editedIdOfContact);
+                    _contactList.RemoveAll(x => x._Id == _editedIdOfContact);
                     _contact = CreateNewContact(_editedIdOfContact);
                 }
                 else
@@ -77,6 +79,16 @@ namespace ContactList
             }
         }
 
+        private void cmbType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CheckType();
+        }
+
+        private void pbProfilPicture_Click(object sender, EventArgs e)
+        {
+            AddPicture();
+        }
+
         private void butDelete_Click(object sender, EventArgs e)
         {
             try
@@ -89,7 +101,7 @@ namespace ContactList
                      MessageBoxButtons.OKCancel);
                 if (confirm == DialogResult.OK)
                 {
-                    _contactList.RemoveAll(x => x._id == _editedIdOfContact);
+                    _contactList.RemoveAll(x => x._Id == _editedIdOfContact);
                     _editedIdOfContact = 0;
                     fileHelper.Serialization(_contactList);
                 }
@@ -104,6 +116,7 @@ namespace ContactList
             }
 
         }
+
         private void butAddPicture_Click(object sender, EventArgs e)
         {
             AddPicture();
@@ -119,8 +132,8 @@ namespace ContactList
         {
             var contact = new Contact
             {
-                _id = newId,
-                _photo = pbProfilPicture.ImageLocation,
+                _Id = newId,
+                _Photo = pbProfilPicture.ImageLocation,
                 _FirstName = tbFirstName.Text,
                 _LastName = tbLastName.Text,
                 _PhoneNr = tbPhoneNr.Text,
@@ -130,12 +143,12 @@ namespace ContactList
                 _Position = tbPosition.Text,
                 _Comments = rtbComment.Text,
             };
-            var photoPath = Path.Combine(Program._DataFolder, $"{contact._id}.jpg");
+            var photoPath = Path.Combine(Program._DataFolder, $"{contact._Id}.jpg");
 
-            if (contact._photo != photoPath && !string.IsNullOrEmpty(contact._photo))
+            if (contact._Photo != photoPath && !string.IsNullOrEmpty(contact._Photo))
             {
                 File.Copy(pbProfilPicture.ImageLocation, photoPath, true);
-                contact._photo = photoPath;
+                contact._Photo = photoPath;
             }
             return contact;
         }
@@ -156,6 +169,7 @@ namespace ContactList
                     $"{ex.Message} {ex.Source} ");
             }
         }
+
         void DgvRefresh()
         {
             _contactList = fileHelper.Deserialization();
@@ -164,8 +178,8 @@ namespace ContactList
 
         int GetNewId()
         {
-            var contactHighestId = _contactList.OrderByDescending(x => x._id).FirstOrDefault();
-            var contactId = contactHighestId == null ? 1 : contactHighestId._id + 1;
+            var contactHighestId = _contactList.OrderByDescending(x => x._Id).FirstOrDefault();
+            var contactId = contactHighestId == null ? 1 : contactHighestId._Id + 1;
             return contactId;
         }
 
@@ -180,7 +194,7 @@ namespace ContactList
                 }
 
                 _contact = dgvContactList.SelectedRows[0].DataBoundItem as Contact;
-                _editedIdOfContact = _contact._id;
+                _editedIdOfContact = _contact._Id;
                 FillTextBoxes(_contact);
             }
             catch (Exception ex)
@@ -191,7 +205,7 @@ namespace ContactList
 
         void FillTextBoxes(Contact contact)
         {
-            _editedIdOfContact = contact._id;
+            _editedIdOfContact = contact._Id;
             tbFirstName.Text = contact._FirstName;
             tbLastName.Text = contact._LastName;
             tbPhoneNr.Text = contact._PhoneNr;
@@ -200,7 +214,7 @@ namespace ContactList
             tbCompany.Text = contact._Company;
             tbPosition.Text = contact._Position;
             rtbComment.Text = contact._Comments;
-            pbProfilPicture.ImageLocation = contact._photo;
+            pbProfilPicture.ImageLocation = contact._Photo;
         }
 
         void dialog_FileOk(object sender, CancelEventArgs e)
@@ -212,11 +226,49 @@ namespace ContactList
                 MessageBox.Show("File size exceeded");
                 e.Cancel = true;
             }
-
         }
+
         void InitCombobox()
         {
             cmbType.DataSource = ContactHelper.TypeList;
         }
+
+        private void SetColumnsHeader()
+        {
+            dgvContactList.Columns[nameof(_contact._Id)].Visible = false;
+            dgvContactList.Columns[nameof(_contact._Photo)].Visible = false;
+            dgvContactList.Columns[nameof(_contact._Picture)].HeaderText = "Zdjęcie";
+            dgvContactList.Columns[nameof(_contact._FirstName)].HeaderText = "Imię";
+            dgvContactList.Columns[nameof(_contact._LastName)].HeaderText = "Nazwisko";
+            dgvContactList.Columns[nameof(_contact._PhoneNr)].HeaderText = "Telefon";
+            dgvContactList.Columns[nameof(_contact._Email)].HeaderText = "Adres email";
+            dgvContactList.Columns[nameof(_contact._Type)].HeaderText = "Typ kontaktu";
+            dgvContactList.Columns[nameof(_contact._Company)].HeaderText = "Firma";
+            dgvContactList.Columns[nameof(_contact._Position)].HeaderText = "Stanowisko";
+            dgvContactList.Columns[nameof(_contact._Comments)].HeaderText = "Uwagi";
+            for (int i = 0; i < dgvContactList.Columns.Count; i++)
+                if (dgvContactList.Columns[i] is DataGridViewImageColumn)
+                {
+                    ((DataGridViewImageColumn)dgvContactList.Columns[i]).ImageLayout = DataGridViewImageCellLayout.Stretch;
+                    break;
+                }
+        }
+
+        private void CheckType()
+        {
+            if (cmbType.Text == "Prywatny")
+            {
+                tbCompany.ReadOnly = true;
+                tbPosition.ReadOnly = true;
+                tbCompany.Text = "";
+                tbPosition.Text = "";
+            }
+            else
+            {
+                tbCompany.ReadOnly = false;
+                tbPosition.ReadOnly = false;
+            }
+        }
+
     }
 }
