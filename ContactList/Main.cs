@@ -20,15 +20,9 @@ namespace ContactList
         public MainWindow()
         {
             InitializeComponent();
-            // cmbType.DataSource = Enum.GetValues(typeof(Contact.TypeOfContact));
-
+            InitCombobox();
             DgvRefresh();
             tbFirstName.Select();
-        }
-
-        private void pbProfilPicture_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void butSave_Click(object sender, EventArgs e)
@@ -49,7 +43,8 @@ namespace ContactList
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd zapisywania kontaktu: {ex.Message} {ex.Source} ");
+                MessageBox.Show($"Błąd zapisywania kontaktu: " +
+                    $"{ex.Message} {ex.Source} ");
             }
             finally
             {
@@ -73,7 +68,8 @@ namespace ContactList
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd zapisywania nowego kontaktu: {ex.Message} {ex.Source} ");
+                MessageBox.Show($"Błąd zapisywania nowego kontaktu:" +
+                    $" {ex.Message} {ex.Source} ");
             }
             finally
             {
@@ -110,11 +106,7 @@ namespace ContactList
         }
         private void butAddPicture_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.FileOk += new CancelEventHandler(dialog_FileOk);
-            dialog.Filter = "Jpeg files, Bmp files|*.jpg;*.bmp";
-            dialog.ShowDialog();
-            pbProfilPicture.ImageLocation = dialog.FileName;
+            AddPicture();
         }
 
         private void bEditContact_Click(object sender, EventArgs e)
@@ -128,19 +120,42 @@ namespace ContactList
             var contact = new Contact
             {
                 _id = newId,
-                _photo = "nima",
+                _photo = pbProfilPicture.ImageLocation,
                 _FirstName = tbFirstName.Text,
                 _LastName = tbLastName.Text,
                 _PhoneNr = tbPhoneNr.Text,
                 _Email = tbEmail.Text,
-                // Type = (Contact.TypeOfContact)cmbType.SelectedItem,
+                _Type = cmbType.Text,
                 _Company = tbCompany.Text,
                 _Position = tbPosition.Text,
                 _Comments = rtbComment.Text,
             };
+            var photoPath = Path.Combine(Program._DataFolder, $"{contact._id}.jpg");
+
+            if (contact._photo != photoPath && !string.IsNullOrEmpty(contact._photo))
+            {
+                File.Copy(pbProfilPicture.ImageLocation, photoPath, true);
+                contact._photo = photoPath;
+            }
             return contact;
         }
 
+        void AddPicture()
+        {
+            try
+            {
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.FileOk += new CancelEventHandler(dialog_FileOk);
+                dialog.Filter = "Jpeg files, Bmp files|*.jpg;*.bmp";
+                dialog.ShowDialog();
+                pbProfilPicture.ImageLocation = dialog.FileName;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Błąd dodawania zdjęcia: " +
+                    $"{ex.Message} {ex.Source} ");
+            }
+        }
         void DgvRefresh()
         {
             _contactList = fileHelper.Deserialization();
@@ -181,10 +196,11 @@ namespace ContactList
             tbLastName.Text = contact._LastName;
             tbPhoneNr.Text = contact._PhoneNr;
             tbEmail.Text = contact._Email;
-            // Type = (Contact.TypeOfContact)cmbType.SelectedItem,
+            cmbType.Text = contact._Type;
             tbCompany.Text = contact._Company;
             tbPosition.Text = contact._Position;
             rtbComment.Text = contact._Comments;
+            pbProfilPicture.ImageLocation = contact._photo;
         }
 
         void dialog_FileOk(object sender, CancelEventArgs e)
@@ -197,6 +213,10 @@ namespace ContactList
                 e.Cancel = true;
             }
 
+        }
+        void InitCombobox()
+        {
+            cmbType.DataSource = ContactHelper.TypeList;
         }
     }
 }

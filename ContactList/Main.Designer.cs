@@ -272,6 +272,7 @@ namespace ContactList
             // 
             // pbProfilPicture
             // 
+            this.pbProfilPicture.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pbProfilPicture.Location = new System.Drawing.Point(12, 27);
             this.pbProfilPicture.Name = "pbProfilPicture";
             this.pbProfilPicture.Size = new System.Drawing.Size(184, 185);
