@@ -25,7 +25,7 @@ namespace ContactList
             SetColumnsHeader();
             CheckType();
             tbFirstName.Select();
-        }       
+        }
 
         private void butSave_Click(object sender, EventArgs e)
         {
@@ -52,11 +52,6 @@ namespace ContactList
             {
                 DgvRefresh();
             }
-        }
-
-        private void burRefresh_Click(object sender, EventArgs e)
-        {
-            DgvRefresh();
         }
 
         private void butSaveAsNew_Click(object sender, EventArgs e)
@@ -101,6 +96,7 @@ namespace ContactList
                      MessageBoxButtons.OKCancel);
                 if (confirm == DialogResult.OK)
                 {
+                    PictureDelete(_contact);
                     _contactList.RemoveAll(x => x._Id == _editedIdOfContact);
                     _editedIdOfContact = 0;
                     fileHelper.Serialization(_contactList);
@@ -108,7 +104,8 @@ namespace ContactList
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd usuwania: {ex.Message} {ex.Source} ");
+                MessageBox.Show($"Błąd usuwania kontaktu: " +
+                    $"{ex.Message} {ex.Source} ");
             }
             finally
             {
@@ -117,9 +114,25 @@ namespace ContactList
 
         }
 
-        private void butAddPicture_Click(object sender, EventArgs e)
+        private void butPictureDelete_Click(object sender, EventArgs e)
         {
-            AddPicture();
+            try
+            {
+                if (_contact == null)
+                {
+                    MessageBox.Show("Proszę zaznacz pozycję do edycji", "Usuwanie zdjęcia");
+                    return;
+                }
+                PictureDelete(_contact);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Błąd edycji: {ex.Message} {ex.Source} ", "Usuwanie zdjęcia");
+            }
+            finally
+            {
+                butPictureDelete.Enabled = false;
+            }
         }
 
         private void bEditContact_Click(object sender, EventArgs e)
@@ -128,8 +141,23 @@ namespace ContactList
             PrepareToEditContact();
         }
 
-        Contact CreateNewContact(int newId)
+        private void FillTextBoxes(Contact contact)
         {
+            _editedIdOfContact = contact._Id;
+            tbFirstName.Text = contact._FirstName;
+            tbLastName.Text = contact._LastName;
+            tbPhoneNr.Text = contact._PhoneNr;
+            tbEmail.Text = contact._Email;
+            cmbType.Text = contact._Type;
+            tbCompany.Text = contact._Company;
+            tbPosition.Text = contact._Position;
+            rtbComment.Text = contact._Comments;
+            pbProfilPicture.ImageLocation = contact._Photo;
+        }
+
+        private Contact CreateNewContact(int newId)
+        {
+            ValidateTextboxes();
             var contact = new Contact
             {
                 _Id = newId,
@@ -153,7 +181,7 @@ namespace ContactList
             return contact;
         }
 
-        void AddPicture()
+        private void AddPicture()
         {
             try
             {
@@ -170,20 +198,31 @@ namespace ContactList
             }
         }
 
-        void DgvRefresh()
+        private void dialog_FileOk(object sender, CancelEventArgs e)
+        {
+            OpenFileDialog dialog = sender as OpenFileDialog;
+            var size = new FileInfo(dialog.FileName).Length;
+            if (size > 250000)
+            {
+                MessageBox.Show("File size exceeded");
+                e.Cancel = true;
+            }
+        }
+
+        private void DgvRefresh()
         {
             _contactList = fileHelper.Deserialization();
             dgvContactList.DataSource = _contactList;
         }
 
-        int GetNewId()
+        private int GetNewId()
         {
             var contactHighestId = _contactList.OrderByDescending(x => x._Id).FirstOrDefault();
             var contactId = contactHighestId == null ? 1 : contactHighestId._Id + 1;
             return contactId;
         }
 
-        void PrepareToEditContact()
+        private void PrepareToEditContact()
         {
             try
             {
@@ -196,6 +235,7 @@ namespace ContactList
                 _contact = dgvContactList.SelectedRows[0].DataBoundItem as Contact;
                 _editedIdOfContact = _contact._Id;
                 FillTextBoxes(_contact);
+                butPictureDelete.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -203,32 +243,7 @@ namespace ContactList
             }
         }
 
-        void FillTextBoxes(Contact contact)
-        {
-            _editedIdOfContact = contact._Id;
-            tbFirstName.Text = contact._FirstName;
-            tbLastName.Text = contact._LastName;
-            tbPhoneNr.Text = contact._PhoneNr;
-            tbEmail.Text = contact._Email;
-            cmbType.Text = contact._Type;
-            tbCompany.Text = contact._Company;
-            tbPosition.Text = contact._Position;
-            rtbComment.Text = contact._Comments;
-            pbProfilPicture.ImageLocation = contact._Photo;
-        }
-
-        void dialog_FileOk(object sender, CancelEventArgs e)
-        {
-            OpenFileDialog dialog = sender as OpenFileDialog;
-            var size = new FileInfo(dialog.FileName).Length;
-            if (size > 250000)
-            {
-                MessageBox.Show("File size exceeded");
-                e.Cancel = true;
-            }
-        }
-
-        void InitCombobox()
+        private void InitCombobox()
         {
             cmbType.DataSource = ContactHelper.TypeList;
         }
@@ -270,5 +285,45 @@ namespace ContactList
             }
         }
 
+        private void ValidateTextboxes()
+        {
+            tbFirstName.Text = ContactHelper.LetterValidation(tbFirstName.Text);
+            tbLastName.Text = ContactHelper.LetterValidation(tbLastName.Text);
+            tbPhoneNr.Text = ContactHelper.NumberValidation(tbPhoneNr.Text, 9);
+            tbEmail.Text = ContactHelper.LetterValidation(tbEmail.Text);
+            tbCompany.Text = ContactHelper.LetterValidation(tbCompany.Text);
+            tbPosition.Text = ContactHelper.LetterValidation(tbPosition.Text);
+        }
+
+        private void PictureDelete(Contact contact)
+        {
+            try
+            {
+                var confirm = MessageBox.Show
+                     ($"Czy napewno chcesz usnunąć zdjęcie: {_contact._FirstName + " " + _contact._LastName.Trim()}",
+                     "Usuwanie zdjęcia",
+                     MessageBoxButtons.OKCancel);
+                if (confirm == DialogResult.OK)
+                {
+                    pbProfilPicture.ImageLocation = "";
+                    var photoPath = Path.Combine(Program._DataFolder, $"{contact._Id}.jpg");
+
+                    if (!string.IsNullOrEmpty(photoPath))
+                    {
+                        if (File.Exists(photoPath))
+                            File.Delete(photoPath);
+                        else
+                            MessageBox.Show("Plik nie istnieje", "Usuwanie zdjęcia");
+                    }
+                    else
+                        MessageBox.Show("Brak ścieżki do pliku", "Usuwanie zdjęcia");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Błąd podczas usuwania zdjęcia: " +
+                    $"{ex.Message} {ex.Source} ", "Usuwanie zdjęcia");
+            }
+        }
     }
 }

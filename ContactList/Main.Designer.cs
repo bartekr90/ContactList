@@ -49,11 +49,10 @@ namespace ContactList
             this.butSave = new System.Windows.Forms.Button();
             this.butDelete = new System.Windows.Forms.Button();
             this.dgvContactList = new System.Windows.Forms.DataGridView();
-            this.butRefresh = new System.Windows.Forms.Button();
             this.butEditContact = new System.Windows.Forms.Button();
             this.butSaveAsNew = new System.Windows.Forms.Button();
-            this.butAddPicture = new System.Windows.Forms.Button();
             this.pbProfilPicture = new System.Windows.Forms.PictureBox();
+            this.butPictureDelete = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvContactList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbProfilPicture)).BeginInit();
             this.SuspendLayout();
@@ -211,11 +210,11 @@ namespace ContactList
             // 
             // butDelete
             // 
-            this.butDelete.Location = new System.Drawing.Point(605, 9);
+            this.butDelete.Location = new System.Drawing.Point(565, 9);
             this.butDelete.Name = "butDelete";
             this.butDelete.Size = new System.Drawing.Size(75, 46);
             this.butDelete.TabIndex = 5;
-            this.butDelete.Text = "Usuń";
+            this.butDelete.Text = "Usuń kontakt";
             this.butDelete.UseVisualStyleBackColor = true;
             this.butDelete.Click += new System.EventHandler(this.butDelete_Click);
             // 
@@ -232,19 +231,9 @@ namespace ContactList
             this.dgvContactList.Size = new System.Drawing.Size(955, 572);
             this.dgvContactList.TabIndex = 6;
             // 
-            // butRefresh
-            // 
-            this.butRefresh.Location = new System.Drawing.Point(686, 9);
-            this.butRefresh.Name = "butRefresh";
-            this.butRefresh.Size = new System.Drawing.Size(75, 46);
-            this.butRefresh.TabIndex = 5;
-            this.butRefresh.Text = "Odśwież";
-            this.butRefresh.UseVisualStyleBackColor = true;
-            this.butRefresh.Click += new System.EventHandler(this.burRefresh_Click);
-            // 
             // butEditContact
             // 
-            this.butEditContact.Location = new System.Drawing.Point(524, 9);
+            this.butEditContact.Location = new System.Drawing.Point(484, 9);
             this.butEditContact.Name = "butEditContact";
             this.butEditContact.Size = new System.Drawing.Size(75, 46);
             this.butEditContact.TabIndex = 5;
@@ -262,16 +251,6 @@ namespace ContactList
             this.butSaveAsNew.UseVisualStyleBackColor = true;
             this.butSaveAsNew.Click += new System.EventHandler(this.butSaveAsNew_Click);
             // 
-            // butAddPicture
-            // 
-            this.butAddPicture.Location = new System.Drawing.Point(403, 9);
-            this.butAddPicture.Name = "butAddPicture";
-            this.butAddPicture.Size = new System.Drawing.Size(75, 46);
-            this.butAddPicture.TabIndex = 8;
-            this.butAddPicture.Text = "Dodaj zdjęcie";
-            this.butAddPicture.UseVisualStyleBackColor = true;
-            this.butAddPicture.Click += new System.EventHandler(this.butAddPicture_Click);
-            // 
             // pbProfilPicture
             // 
             this.pbProfilPicture.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -283,16 +262,26 @@ namespace ContactList
             this.pbProfilPicture.TabStop = false;
             this.pbProfilPicture.Click += new System.EventHandler(this.pbProfilPicture_Click);
             // 
+            // butPictureDelete
+            // 
+            this.butPictureDelete.Enabled = false;
+            this.butPictureDelete.Location = new System.Drawing.Point(403, 9);
+            this.butPictureDelete.Name = "butPictureDelete";
+            this.butPictureDelete.Size = new System.Drawing.Size(75, 46);
+            this.butPictureDelete.TabIndex = 11;
+            this.butPictureDelete.Text = "Usuń zdjęcie";
+            this.butPictureDelete.UseVisualStyleBackColor = true;
+            this.butPictureDelete.Click += new System.EventHandler(this.butPictureDelete_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1247, 649);
+            this.Controls.Add(this.butPictureDelete);
             this.Controls.Add(this.pbProfilPicture);
-            this.Controls.Add(this.butAddPicture);
             this.Controls.Add(this.butSaveAsNew);
             this.Controls.Add(this.dgvContactList);
-            this.Controls.Add(this.butRefresh);
             this.Controls.Add(this.butEditContact);
             this.Controls.Add(this.butDelete);
             this.Controls.Add(this.butSave);
@@ -344,11 +333,10 @@ namespace ContactList
         private System.Windows.Forms.Button butSave;
         private System.Windows.Forms.Button butDelete;
         private System.Windows.Forms.DataGridView dgvContactList;
-        private System.Windows.Forms.Button butRefresh;
         private System.Windows.Forms.Button butEditContact;
         private System.Windows.Forms.Button butSaveAsNew;
-        private System.Windows.Forms.Button butAddPicture;
         private System.Windows.Forms.PictureBox pbProfilPicture;
+        private System.Windows.Forms.Button butPictureDelete;
     }
 }
 
