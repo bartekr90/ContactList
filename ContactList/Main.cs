@@ -50,6 +50,7 @@ namespace ContactList
             }
             finally
             {
+                butPictureDelete.Enabled = false;
                 DgvRefresh();
             }
         }
@@ -70,6 +71,7 @@ namespace ContactList
             }
             finally
             {
+                butPictureDelete.Enabled = false;
                 DgvRefresh();
             }
         }
@@ -109,6 +111,7 @@ namespace ContactList
             }
             finally
             {
+                butPictureDelete.Enabled = false;
                 DgvRefresh();
             }
 
