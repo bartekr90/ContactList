@@ -140,9 +140,11 @@ namespace ContactList
             // 
             // rtbComment
             // 
+            this.rtbComment.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.rtbComment.Location = new System.Drawing.Point(12, 551);
             this.rtbComment.Name = "rtbComment";
-            this.rtbComment.Size = new System.Drawing.Size(184, 82);
+            this.rtbComment.Size = new System.Drawing.Size(184, 86);
             this.rtbComment.TabIndex = 3;
             this.rtbComment.Text = "";
             // 
@@ -219,6 +221,9 @@ namespace ContactList
             // 
             // dgvContactList
             // 
+            this.dgvContactList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvContactList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvContactList.BackgroundColor = System.Drawing.Color.White;
             this.dgvContactList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -227,7 +232,7 @@ namespace ContactList
             this.dgvContactList.RowHeadersVisible = false;
             this.dgvContactList.RowTemplate.Height = 100;
             this.dgvContactList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvContactList.Size = new System.Drawing.Size(955, 572);
+            this.dgvContactList.Size = new System.Drawing.Size(1022, 576);
             this.dgvContactList.TabIndex = 6;
             this.dgvContactList.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvContactList_RowEnter);
             // 
@@ -267,7 +272,7 @@ namespace ContactList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1247, 649);
+            this.ClientSize = new System.Drawing.Size(1275, 649);
             this.Controls.Add(this.butPictureDelete);
             this.Controls.Add(this.pbProfilPicture);
             this.Controls.Add(this.butSaveAsNew);
