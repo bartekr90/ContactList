@@ -24,7 +24,33 @@ namespace ContactList
             DgvRefresh();
             SetColumnsHeader();
             CheckType();
+            butSave.MouseEnter += ButSave_MouseEnter;
+            butSave.MouseLeave += ButSave_MouseLeave;
+            butSaveAsNew.MouseEnter += ButSaveAsNew_MouseEnter;
+            butSaveAsNew.MouseLeave += ButSaveAsNew_MouseLeave;
             tbFirstName.Select();
+        }
+
+        private void ButSaveAsNew_MouseLeave(object sender, EventArgs e)
+        {
+            butSaveAsNew.Text = "Zapisz Nowy";
+        }
+
+        private void ButSaveAsNew_MouseEnter(object sender, EventArgs e)
+        {
+            butSaveAsNew.Text = "Modyfikuje dane";
+            ValidateTextboxes();
+        }
+
+        private void ButSave_MouseLeave(object sender, EventArgs e)
+        {
+            butSave.Text = "Zapisz";
+        }
+
+        private void ButSave_MouseEnter(object sender, EventArgs e)
+        {
+            butSave.Text = "Modyfikuje dane";
+            ValidateTextboxes();
         }
 
         private void butSave_Click(object sender, EventArgs e)
@@ -135,10 +161,10 @@ namespace ContactList
             finally
             {
                 butPictureDelete.Enabled = false;
-                DgvRefresh();                
+                DgvRefresh();
             }
         }
-        
+
         private void FillTextBoxes(Contact contact)
         {
             _editedIdOfContact = contact.Id;
@@ -155,7 +181,6 @@ namespace ContactList
 
         private Contact CreateNewContact(int newId)
         {
-            ValidateTextboxes();
             var contact = new Contact
             {
                 Id = newId,
@@ -332,6 +357,27 @@ namespace ContactList
         {
             PrepareToEditContact();
         }
-        
+         
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            butSave.MouseEnter -= ButSave_MouseEnter;
+            butSave.MouseLeave -= ButSave_MouseLeave;
+            butSaveAsNew.MouseEnter -= ButSaveAsNew_MouseEnter;
+            butSaveAsNew.MouseLeave -= ButSaveAsNew_MouseLeave;
+        }
+
+        private void MainWindow_Click(object sender, EventArgs e)
+        {
+            _editedIdOfContact = 0;
+            tbFirstName.Text = "";
+            tbLastName.Text = "";
+            tbPhoneNr.Text = "";
+            tbEmail.Text = "";
+            cmbType.Text = "";
+            tbCompany.Text = "";
+            tbPosition.Text = "";
+            rtbComment.Text = "";
+            pbProfilPicture.ImageLocation = "";
+        }
     }
 }

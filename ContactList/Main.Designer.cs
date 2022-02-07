@@ -298,6 +298,8 @@ namespace ContactList
             this.Controls.Add(this.label1);
             this.Name = "MainWindow";
             this.Text = "Lista kontaktów";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
+            this.Click += new System.EventHandler(this.MainWindow_Click);
             ((System.ComponentModel.ISupportInitialize)(this.dgvContactList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbProfilPicture)).EndInit();
             this.ResumeLayout(false);
