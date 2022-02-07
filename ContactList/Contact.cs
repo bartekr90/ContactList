@@ -5,27 +5,27 @@ namespace ContactList
 {
     public class Contact
     {
-        public int _Id { get; set; }
-        public string _Photo { get; set; }
-        public Image _Picture
+        public int Id { get; set; }
+        public string Photo { get; set; }
+        public Image Picture
         {
             get
             {
-                if (!string.IsNullOrEmpty(_Photo))
+                if (!string.IsNullOrEmpty(Photo))
                 {
-                    if (File.Exists(_Photo))
-                        return Image.FromFile(_Photo);
+                    if (File.Exists(Photo))
+                        return Image.FromFile(Photo);
                 }
                 return null;
             }
         }
-        public string _FirstName { get; set; }
-        public string _LastName { get; set; }
-        public string _PhoneNr { get; set; }
-        public string _Email { get; set; }
-        public string _Type { get; set; }
-        public string _Company { get; set; }
-        public string _Position { get; set; }
-        public string _Comments { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PhoneNr { get; set; }
+        public string Email { get; set; }
+        public string Type { get; set; }
+        public string Company { get; set; }
+        public string Position { get; set; }
+        public string Comments { get; set; }
     }
 }

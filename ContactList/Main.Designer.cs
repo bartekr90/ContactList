@@ -49,7 +49,6 @@ namespace ContactList
             this.butSave = new System.Windows.Forms.Button();
             this.butDelete = new System.Windows.Forms.Button();
             this.dgvContactList = new System.Windows.Forms.DataGridView();
-            this.butEditContact = new System.Windows.Forms.Button();
             this.butSaveAsNew = new System.Windows.Forms.Button();
             this.pbProfilPicture = new System.Windows.Forms.PictureBox();
             this.butPictureDelete = new System.Windows.Forms.Button();
@@ -210,7 +209,7 @@ namespace ContactList
             // 
             // butDelete
             // 
-            this.butDelete.Location = new System.Drawing.Point(565, 9);
+            this.butDelete.Location = new System.Drawing.Point(484, 9);
             this.butDelete.Name = "butDelete";
             this.butDelete.Size = new System.Drawing.Size(75, 46);
             this.butDelete.TabIndex = 5;
@@ -230,16 +229,7 @@ namespace ContactList
             this.dgvContactList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvContactList.Size = new System.Drawing.Size(955, 572);
             this.dgvContactList.TabIndex = 6;
-            // 
-            // butEditContact
-            // 
-            this.butEditContact.Location = new System.Drawing.Point(484, 9);
-            this.butEditContact.Name = "butEditContact";
-            this.butEditContact.Size = new System.Drawing.Size(75, 46);
-            this.butEditContact.TabIndex = 5;
-            this.butEditContact.Text = "Edycja";
-            this.butEditContact.UseVisualStyleBackColor = true;
-            this.butEditContact.Click += new System.EventHandler(this.bEditContact_Click);
+            this.dgvContactList.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvContactList_RowEnter);
             // 
             // butSaveAsNew
             // 
@@ -282,7 +272,6 @@ namespace ContactList
             this.Controls.Add(this.pbProfilPicture);
             this.Controls.Add(this.butSaveAsNew);
             this.Controls.Add(this.dgvContactList);
-            this.Controls.Add(this.butEditContact);
             this.Controls.Add(this.butDelete);
             this.Controls.Add(this.butSave);
             this.Controls.Add(this.tbPosition);
@@ -333,7 +322,6 @@ namespace ContactList
         private System.Windows.Forms.Button butSave;
         private System.Windows.Forms.Button butDelete;
         private System.Windows.Forms.DataGridView dgvContactList;
-        private System.Windows.Forms.Button butEditContact;
         private System.Windows.Forms.Button butSaveAsNew;
         private System.Windows.Forms.PictureBox pbProfilPicture;
         private System.Windows.Forms.Button butPictureDelete;

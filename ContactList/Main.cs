@@ -14,7 +14,7 @@ namespace ContactList
         private Contact _contact;
         private List<Contact> _contactList;
 
-        private FileHelper<List<Contact>> fileHelper =
+        private FileHelper<List<Contact>> _fileHelper =
             new FileHelper<List<Contact>>(Program._FilePath);
 
         public MainWindow()
@@ -33,14 +33,14 @@ namespace ContactList
             {
                 if (_editedIdOfContact != 0)
                 {
-                    _contactList.RemoveAll(x => x._Id == _editedIdOfContact);
+                    _contactList.RemoveAll(x => x.Id == _editedIdOfContact);
                     _contact = CreateNewContact(_editedIdOfContact);
                 }
                 else
                     _contact = CreateNewContact(GetNewId());
 
                 _contactList.Add(_contact);
-                fileHelper.Serialization(_contactList);
+                _fileHelper.Serialization(_contactList);
                 _editedIdOfContact = 0;
             }
             catch (Exception ex)
@@ -59,10 +59,10 @@ namespace ContactList
         {
             try
             {
-                _contactList = fileHelper.Deserialization();
+                _contactList = _fileHelper.Deserialization();
                 _contact = CreateNewContact(GetNewId());
                 _contactList.Add(_contact);
-                fileHelper.Serialization(_contactList);
+                _fileHelper.Serialization(_contactList);
             }
             catch (Exception ex)
             {
@@ -90,18 +90,18 @@ namespace ContactList
         {
             try
             {
-                _contactList = fileHelper.Deserialization();
+                _contactList = _fileHelper.Deserialization();
                 PrepareToEditContact();
                 var confirm = MessageBox.Show
-                     ($"Czy napewno chcesz usnunąć: {_contact._FirstName + " " + _contact._LastName.Trim()}",
+                     ($"Czy napewno chcesz usnunąć: {_contact.FirstName + " " + _contact.LastName.Trim()}",
                      "Usuwanie kontaktu",
                      MessageBoxButtons.OKCancel);
                 if (confirm == DialogResult.OK)
                 {
                     PictureDelete(_contact);
-                    _contactList.RemoveAll(x => x._Id == _editedIdOfContact);
+                    _contactList.RemoveAll(x => x.Id == _editedIdOfContact);
                     _editedIdOfContact = 0;
-                    fileHelper.Serialization(_contactList);
+                    _fileHelper.Serialization(_contactList);
                 }
             }
             catch (Exception ex)
@@ -135,27 +135,22 @@ namespace ContactList
             finally
             {
                 butPictureDelete.Enabled = false;
+                DgvRefresh();                
             }
         }
-
-        private void bEditContact_Click(object sender, EventArgs e)
-        {
-            _contactList = fileHelper.Deserialization();
-            PrepareToEditContact();
-        }
-
+        
         private void FillTextBoxes(Contact contact)
         {
-            _editedIdOfContact = contact._Id;
-            tbFirstName.Text = contact._FirstName;
-            tbLastName.Text = contact._LastName;
-            tbPhoneNr.Text = contact._PhoneNr;
-            tbEmail.Text = contact._Email;
-            cmbType.Text = contact._Type;
-            tbCompany.Text = contact._Company;
-            tbPosition.Text = contact._Position;
-            rtbComment.Text = contact._Comments;
-            pbProfilPicture.ImageLocation = contact._Photo;
+            _editedIdOfContact = contact.Id;
+            tbFirstName.Text = contact.FirstName;
+            tbLastName.Text = contact.LastName;
+            tbPhoneNr.Text = contact.PhoneNr;
+            tbEmail.Text = contact.Email;
+            cmbType.Text = contact.Type;
+            tbCompany.Text = contact.Company;
+            tbPosition.Text = contact.Position;
+            rtbComment.Text = contact.Comments;
+            pbProfilPicture.ImageLocation = contact.Photo;
         }
 
         private Contact CreateNewContact(int newId)
@@ -163,23 +158,23 @@ namespace ContactList
             ValidateTextboxes();
             var contact = new Contact
             {
-                _Id = newId,
-                _Photo = pbProfilPicture.ImageLocation,
-                _FirstName = tbFirstName.Text,
-                _LastName = tbLastName.Text,
-                _PhoneNr = tbPhoneNr.Text,
-                _Email = tbEmail.Text,
-                _Type = cmbType.Text,
-                _Company = tbCompany.Text,
-                _Position = tbPosition.Text,
-                _Comments = rtbComment.Text,
+                Id = newId,
+                Photo = pbProfilPicture.ImageLocation,
+                FirstName = tbFirstName.Text,
+                LastName = tbLastName.Text,
+                PhoneNr = tbPhoneNr.Text,
+                Email = tbEmail.Text,
+                Type = cmbType.Text,
+                Company = tbCompany.Text,
+                Position = tbPosition.Text,
+                Comments = rtbComment.Text,
             };
-            var photoPath = Path.Combine(Program._DataFolder, $"{contact._Id}.jpg");
+            var photoPath = Path.Combine(Program._DataFolder, $"{contact.Id}.jpg");
 
-            if (contact._Photo != photoPath && !string.IsNullOrEmpty(contact._Photo))
+            if (contact.Photo != photoPath && !string.IsNullOrEmpty(contact.Photo))
             {
                 File.Copy(pbProfilPicture.ImageLocation, photoPath, true);
-                contact._Photo = photoPath;
+                contact.Photo = photoPath;
             }
             return contact;
         }
@@ -214,14 +209,14 @@ namespace ContactList
 
         private void DgvRefresh()
         {
-            _contactList = fileHelper.Deserialization();
+            _contactList = _fileHelper.Deserialization();
             dgvContactList.DataSource = _contactList;
         }
 
         private int GetNewId()
         {
-            var contactHighestId = _contactList.OrderByDescending(x => x._Id).FirstOrDefault();
-            var contactId = contactHighestId == null ? 1 : contactHighestId._Id + 1;
+            var contactHighestId = _contactList.OrderByDescending(x => x.Id).FirstOrDefault();
+            var contactId = contactHighestId == null ? 1 : contactHighestId.Id + 1;
             return contactId;
         }
 
@@ -231,12 +226,11 @@ namespace ContactList
             {
                 if (dgvContactList.SelectedRows.Count == 0)
                 {
-                    MessageBox.Show("Proszę zaznacz pozycję do edycji");
                     return;
                 }
 
                 _contact = dgvContactList.SelectedRows[0].DataBoundItem as Contact;
-                _editedIdOfContact = _contact._Id;
+                _editedIdOfContact = _contact.Id;
                 FillTextBoxes(_contact);
                 butPictureDelete.Enabled = true;
             }
@@ -253,17 +247,17 @@ namespace ContactList
 
         private void SetColumnsHeader()
         {
-            dgvContactList.Columns[nameof(_contact._Id)].Visible = false;
-            dgvContactList.Columns[nameof(_contact._Photo)].Visible = false;
-            dgvContactList.Columns[nameof(_contact._Picture)].HeaderText = "Zdjęcie";
-            dgvContactList.Columns[nameof(_contact._FirstName)].HeaderText = "Imię";
-            dgvContactList.Columns[nameof(_contact._LastName)].HeaderText = "Nazwisko";
-            dgvContactList.Columns[nameof(_contact._PhoneNr)].HeaderText = "Telefon";
-            dgvContactList.Columns[nameof(_contact._Email)].HeaderText = "Adres email";
-            dgvContactList.Columns[nameof(_contact._Type)].HeaderText = "Typ kontaktu";
-            dgvContactList.Columns[nameof(_contact._Company)].HeaderText = "Firma";
-            dgvContactList.Columns[nameof(_contact._Position)].HeaderText = "Stanowisko";
-            dgvContactList.Columns[nameof(_contact._Comments)].HeaderText = "Uwagi";
+            dgvContactList.Columns[nameof(_contact.Id)].Visible = false;
+            dgvContactList.Columns[nameof(_contact.Photo)].Visible = false;
+            dgvContactList.Columns[nameof(_contact.Picture)].HeaderText = "Zdjęcie";
+            dgvContactList.Columns[nameof(_contact.FirstName)].HeaderText = "Imię";
+            dgvContactList.Columns[nameof(_contact.LastName)].HeaderText = "Nazwisko";
+            dgvContactList.Columns[nameof(_contact.PhoneNr)].HeaderText = "Telefon";
+            dgvContactList.Columns[nameof(_contact.Email)].HeaderText = "Adres email";
+            dgvContactList.Columns[nameof(_contact.Type)].HeaderText = "Typ kontaktu";
+            dgvContactList.Columns[nameof(_contact.Company)].HeaderText = "Firma";
+            dgvContactList.Columns[nameof(_contact.Position)].HeaderText = "Stanowisko";
+            dgvContactList.Columns[nameof(_contact.Comments)].HeaderText = "Uwagi";
             for (int i = 0; i < dgvContactList.Columns.Count; i++)
                 if (dgvContactList.Columns[i] is DataGridViewImageColumn)
                 {
@@ -303,13 +297,17 @@ namespace ContactList
             try
             {
                 var confirm = MessageBox.Show
-                     ($"Czy napewno chcesz usnunąć zdjęcie: {_contact._FirstName + " " + _contact._LastName.Trim()}",
+                     ($"Czy napewno chcesz usnunąć zdjęcie: {_contact.FirstName + " " + _contact.LastName.Trim()}",
                      "Usuwanie zdjęcia",
                      MessageBoxButtons.OKCancel);
                 if (confirm == DialogResult.OK)
                 {
                     pbProfilPicture.ImageLocation = "";
-                    var photoPath = Path.Combine(Program._DataFolder, $"{contact._Id}.jpg");
+                    _contactList.FirstOrDefault(x => x.Id == _contact.Id).Photo = "";
+                    dgvContactList.DataSource = _contactList;
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    var photoPath = Path.Combine(Program._DataFolder, $"{contact.Id}.jpg");
 
                     if (!string.IsNullOrEmpty(photoPath))
                     {
@@ -327,6 +325,13 @@ namespace ContactList
                 MessageBox.Show($"Błąd podczas usuwania zdjęcia: " +
                     $"{ex.Message} {ex.Source} ", "Usuwanie zdjęcia");
             }
+
         }
+
+        private void dgvContactList_RowEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            PrepareToEditContact();
+        }
+        
     }
 }
